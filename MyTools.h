@@ -4,8 +4,6 @@
 #include <string>
 
 namespace MyTools {
-
-    // Палитра цветов от 0 до 15
     enum ConsoleColor
     {
         CC_Black = 0,
@@ -29,27 +27,33 @@ namespace MyTools {
 	//=============================================================================================
 
 	void ClrScr();
-
+    void SetColor(ConsoleColor color);
 	void __fastcall GotoXY(double x, double y);
-
 	uint16_t GetMaxX();
-
 	uint16_t GetMaxY();
 
-    void SetColor(ConsoleColor color);
-
 	//=============================================================================================
+	// void __fastcall OpenLogFile(const std::string& FN);
+	// void CloseLogFile();
+	// void __fastcall WriteToLog(const std::string& str);
+	// void __fastcall WriteToLog(const std::string& str, int n);
+	// void __fastcall WriteToLog(const std::string& str, double d);
 
-	void __fastcall OpenLogFile(const std::string& FN);
-
-	void CloseLogFile();
-
-	void __fastcall WriteToLog(const std::string& str);
-
-	void __fastcall WriteToLog(const std::string& str, int n);
-
-	void __fastcall WriteToLog(const std::string& str, double d);
-
-	//=============================================================================================
-
+    class FileLoggerSingletone{
+    public:
+        static FileLoggerSingletone& getInstance(){
+            static FileLoggerSingletone theInstance;
+            return theInstance;
+        }
+    private:
+        FileLoggerSingletone(){}
+        FileLoggerSingletone(const FileLoggerSingletone& root) = delete;
+        FileLoggerSingletone& operator=(const FileLoggerSingletone&) = delete;
+    public:
+        void CloseLogFile();
+        void __fastcall OpenLogFile(const std::string& FN);
+        void __fastcall WriteToLog(const std::string& str);
+        void __fastcall WriteToLog(const std::string& str, int n);
+        void __fastcall WriteToLog(const std::string& str, double d);
+    };
 };
