@@ -13,11 +13,6 @@
 using namespace std;
 
 namespace MyTools {
-
-    ofstream logOut;
-
-    //=============================================================================================
-
     void ClrScr(){
         system("cls");
     }

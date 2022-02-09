@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <fstream>
 
 namespace MyTools {
     enum ConsoleColor
@@ -32,13 +33,6 @@ namespace MyTools {
 	uint16_t GetMaxX();
 	uint16_t GetMaxY();
 
-	//=============================================================================================
-	// void __fastcall OpenLogFile(const std::string& FN);
-	// void CloseLogFile();
-	// void __fastcall WriteToLog(const std::string& str);
-	// void __fastcall WriteToLog(const std::string& str, int n);
-	// void __fastcall WriteToLog(const std::string& str, double d);
-
     class FileLoggerSingletone{
     public:
         static FileLoggerSingletone& getInstance(){
@@ -46,6 +40,8 @@ namespace MyTools {
             return theInstance;
         }
     private:
+        std::ofstream logOut;
+
         FileLoggerSingletone(){}
         FileLoggerSingletone(const FileLoggerSingletone& root) = delete;
         FileLoggerSingletone& operator=(const FileLoggerSingletone&) = delete;
@@ -56,4 +52,4 @@ namespace MyTools {
         void __fastcall WriteToLog(const std::string& str, int n);
         void __fastcall WriteToLog(const std::string& str, double d);
     };
-};
+};// namespace MyTools 
