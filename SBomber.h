@@ -111,23 +111,22 @@ public:
     SBomber();
     ~SBomber();
     
-    void ProcessKBHit();
-    void TimeStart();
-    void TimeFinish();
-    void DrawFrame();
     void MoveObjects();
     void CheckObjects();
-    bool GetExitFlag() const { return exitFlag; }
-
-private:
-    Ground * FindGround() const;
-    LevelGUI * FindLevelGUI() const;
-    std::vector<DestroyableGroundObject*> FindDestoyableGroundObjects() const;
-    std::vector<Bomb*> FindAllBombs() const;
-    Plane * FindPlane() const;
-
     void CheckPlaneAndLevelGUI();
     void CheckBombsAndGround();
-    void __fastcall CheckDestoyableObjects(Bomb* pBomb);
+    void CheckDestoyableObjects(Bomb* pBomb);
+    void ProcessKBHit();
+    void DrawFrame();
+    void TimeStart();
+    void TimeFinish();
+    bool GetExitFlag() const;
+
+private:
+    std::vector<DestroyableGroundObject*> FindDestoyableGroundObjects() const;
+    Ground * FindGround() const;
+    std::vector<Bomb*> FindAllBombs() const;
+    Plane * FindPlane() const;
+    LevelGUI * FindLevelGUI() const;
     void CommandExecutor(CommandInterface* command);    
 };

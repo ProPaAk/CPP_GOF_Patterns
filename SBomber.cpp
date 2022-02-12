@@ -53,10 +53,8 @@ void DropDecoratedBombCommand::Execute(){
 
 void DeleteDynamicObjCommand::Execute(){
     auto it = vecDynamicObj.begin();
-    for (; it != vecDynamicObj.end(); it++)
-    {
-        if (*it == pObj)
-        {
+    for (; it != vecDynamicObj.end(); it++){
+        if (*it == pObj){
             vecDynamicObj.erase(it);
             break;
         }
@@ -65,10 +63,8 @@ void DeleteDynamicObjCommand::Execute(){
 
 void DeleteStaticObjCommand::Execute(){
     auto it = vecStaticObj.begin();
-    for (; it != vecStaticObj.end(); it++)
-    {
-        if (*it == pObj)
-        {
+    for (; it != vecStaticObj.end(); it++){
+        if (*it == pObj){
             vecStaticObj.erase(it);
             break;
         }
@@ -127,61 +123,49 @@ SBomber::SBomber()
     vecStaticObj.push_back(pHouse);
 }
 
-SBomber::~SBomber()
-{
+SBomber::~SBomber(){
     for (size_t i = 0; i < vecDynamicObj.size(); i++){
         if (vecDynamicObj[i] != nullptr){
             delete vecDynamicObj[i];
         }
     }
 
-    for (size_t i = 0; i < vecStaticObj.size(); i++)
-    {
-        if (vecStaticObj[i] != nullptr)
-        {
+    for (size_t i = 0; i < vecStaticObj.size(); i++){
+        if (vecStaticObj[i] != nullptr){
             delete vecStaticObj[i];
         }
     }
 }
 
-void SBomber::MoveObjects()
-{
+void SBomber::MoveObjects(){
     FileLoggerSingletone::getInstance().WriteToLog(string(__FUNCTION__) + " was invoked");
 
-    for (size_t i = 0; i < vecDynamicObj.size(); i++)
-    {
-        if (vecDynamicObj[i] != nullptr)
-        {
+    for (size_t i = 0; i < vecDynamicObj.size(); i++){
+        if (vecDynamicObj[i] != nullptr){
             vecDynamicObj[i]->Move(deltaTime);
         }
     }
 };
 
-void SBomber::CheckObjects()
-{
+void SBomber::CheckObjects(){
     FileLoggerSingletone::getInstance().WriteToLog(string(__FUNCTION__) + " was invoked");
 
     CheckPlaneAndLevelGUI();
     CheckBombsAndGround();
 };
 
-void SBomber::CheckPlaneAndLevelGUI()
-{
-    if (FindPlane()->GetX() > FindLevelGUI()->GetFinishX())
-    {
+void SBomber::CheckPlaneAndLevelGUI(){
+    if (FindPlane()->GetX() > FindLevelGUI()->GetFinishX()){
         exitFlag = true;
     }
 }
 
-void SBomber::CheckBombsAndGround() 
-{
+void SBomber::CheckBombsAndGround(){
     vector<Bomb*> vecBombs = FindAllBombs();
     Ground* pGround = FindGround();
     const double y = pGround->GetY();
-    for (size_t i = 0; i < vecBombs.size(); i++)
-    {
-        if (vecBombs[i]->GetY() >= y)
-        {
+    for (size_t i = 0; i < vecBombs.size(); i++){
+        if (vecBombs[i]->GetY() >= y){
             pGround->AddCrater(vecBombs[i]->GetX());
             CheckDestoyableObjects(vecBombs[i]);
             CommandExecutor(
@@ -191,107 +175,19 @@ void SBomber::CheckBombsAndGround()
 
 }
 
-void SBomber::CheckDestoyableObjects(Bomb * pBomb)
-{
+void SBomber::CheckDestoyableObjects(Bomb * pBomb){
     vector<DestroyableGroundObject*> vecDestoyableObjects = FindDestoyableGroundObjects();
     const double size = pBomb->GetWidth();
     const double size_2 = size / 2;
-    for (size_t i = 0; i < vecDestoyableObjects.size(); i++)
-    {
+    for (size_t i = 0; i < vecDestoyableObjects.size(); i++){
         const double x1 = pBomb->GetX() - size_2;
         const double x2 = x1 + size;
-        if (vecDestoyableObjects[i]->isInside(x1, x2))
-        {
+        if (vecDestoyableObjects[i]->isInside(x1, x2)){
             score += vecDestoyableObjects[i]->GetScore();            
             CommandExecutor(new DeleteStaticObjCommand(                
                 vecStaticObj,vecDestoyableObjects[i]));
         }
     }
-}
-
-vector<DestroyableGroundObject*> SBomber::FindDestoyableGroundObjects() const
-{
-    vector<DestroyableGroundObject*> vec;
-    Tank* pTank;
-    House* pHouse;
-    for (size_t i = 0; i < vecStaticObj.size(); i++)
-    {
-        pTank = dynamic_cast<Tank*>(vecStaticObj[i]);
-        if (pTank != nullptr)
-        {
-            vec.push_back(pTank);
-            continue;
-        }
-
-        pHouse = dynamic_cast<House*>(vecStaticObj[i]);
-        if (pHouse != nullptr)
-        {
-            vec.push_back(pHouse);
-            continue;
-        }
-    }
-
-    return vec;
-}
-
-Ground* SBomber::FindGround() const
-{
-    Ground* pGround;
-
-    for (size_t i = 0; i < vecStaticObj.size(); i++)
-    {
-        pGround = dynamic_cast<Ground *>(vecStaticObj[i]);
-        if (pGround != nullptr)
-        {
-            return pGround;
-        }
-    }
-
-    return nullptr;
-}
-
-vector<Bomb*> SBomber::FindAllBombs() const
-{
-    vector<Bomb*> vecBombs;
-
-    for (size_t i = 0; i < vecDynamicObj.size(); i++)
-    {
-        Bomb* pBomb = dynamic_cast<Bomb*>(vecDynamicObj[i]);
-        if (pBomb != nullptr)
-        {
-            vecBombs.push_back(pBomb);
-        }
-    }
-
-    return vecBombs;
-}
-
-Plane* SBomber::FindPlane() const
-{
-    for (size_t i = 0; i < vecDynamicObj.size(); i++)
-    {
-        Plane* p = dynamic_cast<Plane*>(vecDynamicObj[i]);
-        if (p != nullptr)
-        {
-            return p;
-        }
-    }
-
-    return nullptr;
-}
-
-LevelGUI* SBomber::FindLevelGUI() const
-{
-    for (size_t i = 0; i < vecStaticObj.size(); i++)
-    {
-        LevelGUI* p = dynamic_cast<LevelGUI*>(vecStaticObj[i]);
-        if (p != nullptr)
-        {
-            return p;
-        }
-    }
-
-    return nullptr;
 }
 
 void SBomber::ProcessKBHit(){
@@ -303,16 +199,15 @@ void SBomber::ProcessKBHit(){
     FileLoggerSingletone::getInstance().WriteToLog(string(__FUNCTION__) + " was invoked. key = ", c);
 
     switch (c) {
-
-    case 27: // esc
+    case 27:
         exitFlag = true;
         break;
 
-    case 72: // up
+    case 72: 
         FindPlane()->ChangePlaneY(-0.25);
         break;
 
-    case 80: // down
+    case 80:
         FindPlane()->ChangePlaneY(0.25);
         break;
 
@@ -329,28 +224,22 @@ void SBomber::ProcessKBHit(){
                 bombsNumber,vecDynamicObj,score,FindPlane(),7));
         break;
 
-
     default:
         break;
     }
 }
 
-void SBomber::DrawFrame()
-{
+void SBomber::DrawFrame(){
     FileLoggerSingletone::getInstance().WriteToLog(string(__FUNCTION__) + " was invoked");
 
-    for (size_t i = 0; i < vecDynamicObj.size(); i++)
-    {
-        if (vecDynamicObj[i] != nullptr)
-        {
+    for (size_t i = 0; i < vecDynamicObj.size(); i++){
+        if (vecDynamicObj[i] != nullptr){
             vecDynamicObj[i]->Draw();
         }
     }
 
-    for (size_t i = 0; i < vecStaticObj.size(); i++)
-    {
-        if (vecStaticObj[i] != nullptr)
-        {
+    for (size_t i = 0; i < vecStaticObj.size(); i++){
+        if (vecStaticObj[i] != nullptr){
             vecStaticObj[i]->Draw();
         }
     }
@@ -361,19 +250,88 @@ void SBomber::DrawFrame()
     FindLevelGUI()->SetParam(passedTime, fps, bombsNumber, score);
 }
 
-void SBomber::TimeStart()
-{
+void SBomber::TimeStart(){
     FileLoggerSingletone::getInstance().WriteToLog(string(__FUNCTION__) + " was invoked");
     startTime = GetTickCount64();
 }
 
-void SBomber::TimeFinish()
-{
+void SBomber::TimeFinish(){
     finishTime = GetTickCount64();
     deltaTime = uint16_t(finishTime - startTime);
     passedTime += deltaTime;
 
     FileLoggerSingletone::getInstance().WriteToLog(string(__FUNCTION__) + " deltaTime = ", (int)deltaTime);
+}
+
+bool SBomber::GetExitFlag() const { 
+    return exitFlag; 
+}
+
+vector<DestroyableGroundObject*> SBomber::FindDestoyableGroundObjects() const{
+    vector<DestroyableGroundObject*> vec;
+    Tank* pTank;
+    House* pHouse;
+    for (size_t i = 0; i < vecStaticObj.size(); i++){
+        pTank = dynamic_cast<Tank*>(vecStaticObj[i]);
+        if (pTank != nullptr){
+            vec.push_back(pTank);
+            continue;
+        }
+
+        pHouse = dynamic_cast<House*>(vecStaticObj[i]);
+        if (pHouse != nullptr){
+            vec.push_back(pHouse);
+            continue;
+        }
+    }
+
+    return vec;
+}
+
+Ground* SBomber::FindGround() const{
+    Ground* pGround;
+
+    for (size_t i = 0; i < vecStaticObj.size(); i++){
+        pGround = dynamic_cast<Ground *>(vecStaticObj[i]);
+        if (pGround != nullptr){
+            return pGround;
+        }
+    }
+
+    return nullptr;
+}
+
+vector<Bomb*> SBomber::FindAllBombs() const{
+    vector<Bomb*> vecBombs;
+
+    for (size_t i = 0; i < vecDynamicObj.size(); i++){
+        Bomb* pBomb = dynamic_cast<Bomb*>(vecDynamicObj[i]);
+        if (pBomb != nullptr){
+            vecBombs.push_back(pBomb);
+        }
+    }
+
+    return vecBombs;
+}
+
+Plane* SBomber::FindPlane() const{
+    for (size_t i = 0; i < vecDynamicObj.size(); i++){
+        Plane* p = dynamic_cast<Plane*>(vecDynamicObj[i]);
+        if (p != nullptr){
+            return p;
+        }
+    }
+    return nullptr;
+}
+
+LevelGUI* SBomber::FindLevelGUI() const{
+    for (size_t i = 0; i < vecStaticObj.size(); i++){
+        LevelGUI* p = dynamic_cast<LevelGUI*>(vecStaticObj[i]);
+        if (p != nullptr){
+            return p;
+        }
+    }
+    return nullptr;
 }
 
 void SBomber::CommandExecutor(CommandInterface* command){
