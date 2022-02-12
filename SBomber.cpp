@@ -129,10 +129,8 @@ SBomber::SBomber()
 
 SBomber::~SBomber()
 {
-    for (size_t i = 0; i < vecDynamicObj.size(); i++)
-    {
-        if (vecDynamicObj[i] != nullptr)
-        {
+    for (size_t i = 0; i < vecDynamicObj.size(); i++){
+        if (vecDynamicObj[i] != nullptr){
             delete vecDynamicObj[i];
         }
     }

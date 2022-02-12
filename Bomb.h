@@ -5,16 +5,12 @@
 #include "DynamicObject.h"
 #include "MyTools.h"
 
-class Bomb : public DynamicObject
-{
+class Bomb : public DynamicObject{
 public:
+	static const uint16_t BombCost = 10;
+	virtual void Draw() const override;	
 
-	static const uint16_t BombCost = 10; 
-
-	virtual void Draw() const override;
-
-private:
-
+	virtual ~Bomb(){ }
 };
 
 class BombDecorator : public Bomb{

@@ -98,14 +98,14 @@ class SBomber{
 private:
     std::vector<DynamicObject*> vecDynamicObj;
     std::vector<GameObject*> vecStaticObj;
+    bool exitFlag;
     uint64_t startTime;
     uint64_t finishTime;
-    uint64_t passedTime;
     uint16_t deltaTime;
+    uint64_t passedTime;
     uint16_t fps;
     uint16_t bombsNumber;
     int16_t score;
-    bool exitFlag;
 
 public:
     SBomber();

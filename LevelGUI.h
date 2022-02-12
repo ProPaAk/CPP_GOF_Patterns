@@ -19,13 +19,13 @@ public:
     void Draw() const override;
 
 private:
-
+    uint16_t bombsNumber; 
+    int16_t score;
+    uint64_t passedTime; 
+    uint64_t fps;
     uint16_t height;
     uint16_t finishX = 109;
 
-    uint64_t passedTime, fps;
-    uint16_t bombsNumber;
-    int16_t score;
 };
 
 
