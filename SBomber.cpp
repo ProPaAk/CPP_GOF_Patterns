@@ -30,6 +30,27 @@ void DropBombCommand::Execute(){
         score -= Bomb::BombCost;
     }
 }
+
+void DropDecoratedBombCommand::Execute(){
+    if (bombsNumber > 0){
+        FileLoggerSingletone::getInstance().WriteToLog(string(__FUNCTION__) + " was invoked");
+
+        double x = pPlane->GetX() + 4;
+        double y = pPlane->GetY() + 2;
+
+        Bomb* pBomb = new Bomb;
+        pBomb->SetDirection(0.3, 1);
+        pBomb->SetPos(x, y);
+        pBomb->SetWidth(SMALL_CRATER_SIZE);
+        BombDecorator* bd = new BombDecorator(
+            pBomb, speed);
+
+        vecDynamicObj.push_back(bd);
+        bombsNumber--;
+        score -= Bomb::BombCost;
+    }
+}
+
 void DeleteDynamicObjCommand::Execute(){
     auto it = vecDynamicObj.begin();
     for (; it != vecDynamicObj.end(); it++)
@@ -183,7 +204,7 @@ void SBomber::CheckDestoyableObjects(Bomb * pBomb)
         const double x2 = x1 + size;
         if (vecDestoyableObjects[i]->isInside(x1, x2))
         {
-            score += vecDestoyableObjects[i]->GetScore();
+            score += vecDestoyableObjects[i]->GetScore();            
             CommandExecutor(new DeleteStaticObjCommand(                
                 vecStaticObj,vecDestoyableObjects[i]));
         }
@@ -302,10 +323,14 @@ void SBomber::ProcessKBHit(){
         CommandExecutor(
             new DropBombCommand(bombsNumber,vecDynamicObj,score,FindPlane()));
         break;
-
-    case 'B':
-        DropBomb();
+    
+    case 'c':
+    case 'C':
+        CommandExecutor(
+            new DropDecoratedBombCommand(
+                bombsNumber,vecDynamicObj,score,FindPlane(),7));
         break;
+
 
     default:
         break;

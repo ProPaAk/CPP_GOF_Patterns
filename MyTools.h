@@ -41,10 +41,12 @@ namespace MyTools {
         }
     private:
         std::ofstream logOut;
-
+        
         FileLoggerSingletone(){}
         FileLoggerSingletone(const FileLoggerSingletone& root) = delete;
+        FileLoggerSingletone(const FileLoggerSingletone&& root) = delete;
         FileLoggerSingletone& operator=(const FileLoggerSingletone&) = delete;
+        FileLoggerSingletone& operator=(const FileLoggerSingletone&&) = delete;
     public:
         void CloseLogFile();
         void __fastcall OpenLogFile(const std::string& FN);

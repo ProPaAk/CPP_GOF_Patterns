@@ -8,6 +8,7 @@
 #include "Ground.h"
 #include "Tank.h"
 
+
 class CommandInterface{
 public:
     virtual void Execute() = 0;
@@ -36,7 +37,30 @@ public:
     ~DropBombCommand() {}
 };
 
+class DropDecoratedBombCommand : public CommandInterface{
+private:
+    uint16_t& bombsNumber;
+    std::vector<DynamicObject*>& vecDynamicObj;
+    int16_t& score;
+    const Plane* pPlane;
+    const int speed;
+
 public:
+    DropDecoratedBombCommand(uint16_t& bombsNumber,
+    std::vector<DynamicObject*>& vecDynamicObj,
+    int16_t& score, const Plane* pPlane, const int speed)
+    :
+    bombsNumber(bombsNumber),
+    vecDynamicObj(vecDynamicObj),
+    score(score),
+    pPlane(pPlane),
+    speed(speed)
+    {}
+
+    void Execute() override;
+    ~DropDecoratedBombCommand() {}
+};
+
 class DeleteDynamicObjCommand : public CommandInterface{
 private:
     std::vector<DynamicObject*>& vecDynamicObj;
