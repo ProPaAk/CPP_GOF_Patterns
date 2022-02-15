@@ -71,6 +71,8 @@ void DeleteStaticObjCommand::Execute(){
     }
 }
 
+//=========================================================================
+
 SBomber::SBomber()
     : exitFlag(false),
     startTime(0),
@@ -161,18 +163,17 @@ void SBomber::CheckPlaneAndLevelGUI(){
 }
 
 void SBomber::CheckBombsAndGround(){
-    vector<Bomb*> vecBombs = FindAllBombs();
+    std::vector<Bomb*> vecBombs = FindAllBombs();
     Ground* pGround = FindGround();
     const double y = pGround->GetY();
-    for (size_t i = 0; i < vecBombs.size(); i++){
-        if (vecBombs[i]->GetY() >= y){
+    for (size_t i = 0; i < vecBombs.size(); i++)
+        if (vecBombs[i]->GetY() >= y) {
             pGround->AddCrater(vecBombs[i]->GetX());
             CheckDestoyableObjects(vecBombs[i]);
+            
             CommandExecutor(
                 new DeleteDynamicObjCommand(vecDynamicObj,vecBombs[i]));
         }
-    }
-
 }
 
 void SBomber::CheckDestoyableObjects(Bomb * pBomb){
@@ -284,7 +285,6 @@ vector<DestroyableGroundObject*> SBomber::FindDestoyableGroundObjects() const{
             continue;
         }
     }
-
     return vec;
 }
 
@@ -297,20 +297,15 @@ Ground* SBomber::FindGround() const{
             return pGround;
         }
     }
-
     return nullptr;
 }
 
-vector<Bomb*> SBomber::FindAllBombs() const{
+vector<Bomb*> SBomber::FindAllBombs(){
     vector<Bomb*> vecBombs;
-
-    for (size_t i = 0; i < vecDynamicObj.size(); i++){
-        Bomb* pBomb = dynamic_cast<Bomb*>(vecDynamicObj[i]);
-        if (pBomb != nullptr){
-            vecBombs.push_back(pBomb);
-        }
-    }
-
+    
+    for (Bomb* pBomb: *this)
+        vecBombs.push_back(pBomb);
+    
     return vecBombs;
 }
 
@@ -339,4 +334,63 @@ void SBomber::CommandExecutor(CommandInterface* command){
         command->Execute();
         delete command;
     }
+}
+
+SBomber::BombIterator::BombIterator(
+    std::vector<DynamicObject*>& vecDynamicObj,
+    size_t index)
+    :
+    vecDynamicObj(vecDynamicObj),
+    current(findNextBomb(index))
+    {}
+
+SBomber::BombIterator& SBomber::BombIterator::operator++ () {
+	++current;
+    current = findNextBomb();
+    return *this;
+}
+
+SBomber::BombIterator SBomber::BombIterator::operator++ (int){
+    BombIterator it = *this;
+    current = findNextBomb();
+    return it;
+
+}
+
+Bomb* SBomber::BombIterator::operator* () const {
+    return getPtr();
+}
+
+bool SBomber::BombIterator::operator== (const BombIterator& other) const {
+    return this->getPtr() == other.getPtr();
+}
+
+bool SBomber::BombIterator::operator!= (const BombIterator& other) const {
+    return !(*this == other);
+}
+
+size_t SBomber::BombIterator::findNextBomb(size_t start) const {
+    for (size_t i = start; i < vecDynamicObj.size(); ++i)
+        if (dynamic_cast<Bomb*>(vecDynamicObj[i]))
+            return i;
+    return vecDynamicObj.size();
+}
+
+size_t SBomber::BombIterator::findNextBomb() const {
+    return findNextBomb(current);
+}
+
+Bomb* SBomber::BombIterator::getPtr() const {
+    if (current < vecDynamicObj.size())
+        return dynamic_cast<Bomb*>(vecDynamicObj[current]);
+    else
+        return nullptr;
+}
+
+SBomber::BombIterator SBomber::begin(){
+    return BombIterator(vecDynamicObj, 0);
+}
+
+SBomber::BombIterator SBomber::end(){
+    return BombIterator(vecDynamicObj, vecDynamicObj.size());
 }

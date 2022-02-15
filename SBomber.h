@@ -95,7 +95,6 @@ public:
 //=========================================================================
 
 class SBomber{
-private:
     std::vector<DynamicObject*> vecDynamicObj;
     std::vector<GameObject*> vecStaticObj;
     bool exitFlag;
@@ -125,8 +124,29 @@ public:
 private:
     std::vector<DestroyableGroundObject*> FindDestoyableGroundObjects() const;
     Ground * FindGround() const;
-    std::vector<Bomb*> FindAllBombs() const;
+    std::vector<Bomb*> FindAllBombs();
     Plane * FindPlane() const;
     LevelGUI * FindLevelGUI() const;
-    void CommandExecutor(CommandInterface* command);    
+    void CommandExecutor(CommandInterface* command); 
+    
+    class BombIterator {
+        std::vector<DynamicObject*>& vecDynamicObj;
+        size_t current;
+
+    public:
+        BombIterator(std::vector<DynamicObject*>& vecDynamicObj,
+        size_t index);
+        BombIterator& operator++ ();
+        BombIterator operator++ (int);
+		Bomb* operator* () const;
+		bool operator== (const BombIterator& other) const;
+		bool operator!= (const BombIterator& other) const;
+
+    private:
+        size_t findNextBomb(size_t start) const;
+        size_t findNextBomb() const;
+        Bomb* getPtr() const;
+    };
+    BombIterator begin();
+    BombIterator end();
 };
