@@ -29,6 +29,10 @@ add_executable(${ProjectId}
     SBomber.h
     SBomber.cpp
     SBomberProject.cpp
+    TankAdapter.h
+    TankAdapter.cpp
+    TankAdaptee.h
+    TankAdaptee.cpp
     Tank.h
     Tank.cpp
 )

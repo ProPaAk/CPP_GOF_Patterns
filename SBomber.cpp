@@ -6,6 +6,7 @@
 #include "SBomber.h"
 #include "Bomb.h"
 #include "Ground.h"
+#include "TankAdapter.h"
 #include "Tank.h"
 #include "House.h"
 
@@ -109,7 +110,7 @@ SBomber::SBomber()
     pGr->SetWidth(width - 2);
     vecStaticObj.push_back(pGr);
 
-    Tank* pTank = new Tank;
+    Tank* pTank = new Tank();
     pTank->SetWidth(13);
     pTank->SetPos(30, groundY - 1);
     vecStaticObj.push_back(pTank);
@@ -118,6 +119,11 @@ SBomber::SBomber()
     pTank->SetWidth(13);
     pTank->SetPos(50, groundY - 1);
     vecStaticObj.push_back(pTank);
+
+    TankAdapter* pTankAdapter = new TankAdapter();
+    pTankAdapter->SetWidth(13);
+    pTankAdapter->SetPos(10, groundY - 1);
+    vecStaticObj.push_back(pTankAdapter);
 
     House * pHouse = new House;
     pHouse->SetWidth(13);
@@ -271,6 +277,7 @@ bool SBomber::GetExitFlag() const {
 vector<DestroyableGroundObject*> SBomber::FindDestoyableGroundObjects() const{
     vector<DestroyableGroundObject*> vec;
     Tank* pTank;
+    TankAdapter* pTankAdapter;
     House* pHouse;
     for (size_t i = 0; i < vecStaticObj.size(); i++){
         pTank = dynamic_cast<Tank*>(vecStaticObj[i]);
@@ -278,6 +285,14 @@ vector<DestroyableGroundObject*> SBomber::FindDestoyableGroundObjects() const{
             vec.push_back(pTank);
             continue;
         }
+
+    for (size_t i = 0; i < vecStaticObj.size(); i++){
+        pTankAdapter = dynamic_cast<TankAdapter*>(vecStaticObj[i]);
+        if (pTankAdapter != nullptr){
+            vec.push_back(pTankAdapter);
+            continue;
+        }
+    }
 
         pHouse = dynamic_cast<House*>(vecStaticObj[i]);
         if (pHouse != nullptr){

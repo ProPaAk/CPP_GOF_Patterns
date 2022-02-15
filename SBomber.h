@@ -6,6 +6,7 @@
 #include "Plane.h"
 #include "Bomb.h"
 #include "Ground.h"
+#include "TankAdapter.h"
 #include "Tank.h"
 
 
