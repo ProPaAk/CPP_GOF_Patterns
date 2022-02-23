@@ -9,6 +9,8 @@
 #include "TankAdapter.h"
 #include "Tank.h"
 #include "House.h"
+#include "HouseBuilderA.h"
+#include "BuilderDirector.h"
 
 using namespace std;
 using namespace MyTools;
@@ -125,10 +127,32 @@ SBomber::SBomber()
     pTankAdapter->SetPos(10, groundY - 1);
     vecStaticObj.push_back(pTankAdapter);
 
-    House * pHouse = new House;
-    pHouse->SetWidth(13);
-    pHouse->SetPos(80, groundY - 1);
-    vecStaticObj.push_back(pHouse);
+    
+    int houseSwitcher;
+    std::cout << "Chose house type:" << std::endl;
+    std::cout << "Enter ""1"" - simple house" << std::endl;
+    std::cout << "Enter ""2"" - tower" << std::endl;
+    std::cout << "Enter ""3"" - to start game" << std::endl;
+    std::cin >> houseSwitcher;
+    BuilderDirector bD;
+    HouseBuilderA hBA;
+    switch (houseSwitcher){
+    case 1:{
+        House * pHouse = new House;
+        pHouse->SetWidth(13);
+        pHouse->SetPos(80, groundY - 1);
+        vecStaticObj.push_back(pHouse);
+        break;}
+    case 2:{
+        House* pHouseBuilderA = bD.createHouse(hBA, 13, 
+            94, (groundY - 1));
+        vecStaticObj.push_back(pHouseBuilderA);
+        break;}
+    case 3:
+        break;
+    default:
+        break;
+}
 }
 
 SBomber::~SBomber(){

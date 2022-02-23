@@ -8,10 +8,8 @@ using namespace std;
 
 //========================================================================================================================
 
-int main(void)
-{
-    MyTools::FileLoggerSingletone::getInstance().OpenLogFile("log.txt");
-    
+int main(void){
+    MyTools::FileLoggerSingletone::getInstance().OpenLogFile("log.txt");    
     SBomber game;
 
     do {

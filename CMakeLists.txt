@@ -20,6 +20,9 @@ add_executable(${ProjectId}
     Ground.cpp
     House.h
     House.cpp
+    HouseBuilderA.h
+    HouseBuilderA.cpp
+    HouseBuilder.h
     LevelGUI.h
     LevelGUI.cpp
     MyTools.h
@@ -35,4 +38,5 @@ add_executable(${ProjectId}
     TankAdaptee.cpp
     Tank.h
     Tank.cpp
+    BuilderDirector.h
 )
